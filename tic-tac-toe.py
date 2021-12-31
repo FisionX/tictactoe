@@ -31,15 +31,18 @@ def check_win(values):
         return True
     else: return False
 
-def cont(clean_values, values): # Check if the game continues
+def cont(clean_values, values, turn): # Check if the game continues
     empty_spaces = []
     for x in clean_values:
         if x == ' ':
             empty_spaces.append(x)
     empty_spaces = len(empty_spaces)
 
-    if empty_spaces == 0 or check_win(values) == True:
+    if empty_spaces == 0:
+        print("Tie!")
         return False #The game ends
+    elif check_win(values):
+        print("Player {} wins!".format(turn))
     else:
         return True #The game continues
 
@@ -48,28 +51,29 @@ def game():
     values = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
     clean_values = [' ' for x in range(9)]
     turn = random.choice([p1, p2]) #Choses who will be the first turn
-    con = cont(clean_values, values) # Will be tha game control variable
-    place = 0
+    con = cont(clean_values, values, turn) # Will be tha game control variable
+    place = int()
+    places = []
 
     print("Tic Tac Toe Game")
-    time.sleep(1)
     print("It's {} player turn".format(turn))
-    print_grid(values)
 
     while(con):
-        place = int(input("Chose a number for {} ".format(turn))) - 1
-        while(place < 0 or place > 9): # makes shure if the user imput is correct like a try exept but in a loop
+        print_grid(values)
+        print()
+        print_grid(clean_values)
+
+        place = int(input("Chose a number for {} ".format(turn)))
+        while(place < 0 or place > 9 or place+1 in places): # makes shure if the user imput is correct like a try exept but in a loop
             print("Value out of range. Try again :]")
             place = int(input("Chose a number for {} ".format(turn)))
-        values[place], clean_values[place] = turn, turn
+        values[place-1], clean_values[place-1] = turn, turn
+        places.append(place+1)
 
         print_grid(values)
-        con = cont(clean_values, values)
-        if con == False:
-            print("Player {} wins!!".format(turn))
+        con = cont(clean_values, values, turn)
 
         if turn == p1:
             turn = p2
         else: turn = p1
-
 game()
